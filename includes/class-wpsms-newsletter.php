@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WP_SMS\Api\Router_Manager;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
@@ -30,7 +32,7 @@ class Newsletter {
 
 		// Ajax params
 		wp_localize_script( 'wpsms-ajax-script', 'wpsms_ajax_object', array(
-			'ajaxurl'         => get_rest_url( null, 'wpsms/v1/newsletter' ),
+			'ajaxurl'         => get_rest_url( null, RestApi::getRoute( 'newsletter' ) ),
 			'unknown_error'   => __( 'Unknown Error! Check your connection and try again.', 'wp-sms' ),
 			'loading_text'    => __( 'Loading...', 'wp-sms' ),
 			'subscribe_text'  => __( 'Subscribe', 'wp-sms' ),

@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Api\V1;
 
+use WP_SMS\RestApi;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
@@ -22,15 +24,17 @@ class Credit extends \WP_SMS\RestApi {
 
 	/**
 	 * Register routes
+	 *
+	 * @param $route
 	 */
-	public function register_routes() {
+	public function registerRoute( $route ) {
 
 		// SMS Newsletter
-		register_rest_route( $this->namespace . '/v1', '/credit', array(
+		register_rest_route( RestApi::$namespace, $route, array(
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
-				'callback'            => array( $this, 'credit_callback' ),
-				'permission_callback' => array( $this, 'get_item_permissions_check' ),
+				'callback'            => array( self::class, 'credit_callback' ),
+				'permission_callback' => array( self::class, 'get_item_permissions_check' ),
 			)
 		) );
 	}

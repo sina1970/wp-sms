@@ -2,6 +2,7 @@
 
 namespace WP_SMS\Api\V1;
 
+use WP_SMS\Api\Router_Manager;
 use WP_SMS\RestApi;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -18,13 +19,11 @@ class Send {
 	/**
 	 * Register API class route
 	 *
-	 * @param $nameSpace
 	 * @param $route
 	 */
-	public static function registerRoute( $nameSpace, $route ) {
-
+	public static function registerRoute( $route ) {
 		// SMS Newsletter
-		register_rest_route( $nameSpace, $route, array(
+		register_rest_route( RestApi::$namespace, $route, array(
 			array(
 				'methods'             => \WP_REST_Server::CREATABLE,
 				'callback'            => array( self::class, 'send_callback' ),

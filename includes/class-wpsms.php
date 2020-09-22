@@ -48,6 +48,10 @@ class WP_SMS {
 	 */
 	public function includes() {
 
+		// API classes
+		require_once WP_SMS_DIR . 'includes/class-wpsms-rest-api.php';
+		require_once WP_SMS_DIR . 'includes/api/class-wpsms-router-manager.php';
+
 		// Utility classes.
 		require_once WP_SMS_DIR . 'includes/class-wpsms-features.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-notifications.php';
@@ -56,7 +60,6 @@ class WP_SMS {
 		require_once WP_SMS_DIR . 'includes/class-wpsms-quform.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-newsletter.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-widget.php';
-		require_once WP_SMS_DIR . 'includes/class-wpsms-rest-api.php';
 		require_once WP_SMS_DIR . 'includes/class-wpsms-shortcode.php';
 
 		if ( is_admin() ) {
@@ -90,13 +93,6 @@ class WP_SMS {
 			// Front Class.
 			require_once WP_SMS_DIR . 'includes/class-front.php';
 		}
-
-		// API router manager.
-		/*require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-newsletter.php';
-		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-subscribers.php';
-		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-send.php';
-		require_once WP_SMS_DIR . 'includes/api/v1/class-wpsms-api-credit.php';*/
-		require_once WP_SMS_DIR . 'includes/api/class-wpsms-router-manager.php';
 
 		// Template functions.
 		require_once WP_SMS_DIR . 'includes/template-functions.php';

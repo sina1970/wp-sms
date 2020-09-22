@@ -12,7 +12,8 @@ class RestApi {
 	protected $option;
 	protected $db;
 	protected $tb_prefix;
-	public $namespace;
+	public static $version;
+	public static $namespace;
 
 	public function __construct() {
 		global $sms, $wpdb;
@@ -21,7 +22,24 @@ class RestApi {
 		$this->options   = Option::getOptions();
 		$this->db        = $wpdb;
 		$this->tb_prefix = $wpdb->prefix;
-		$this->namespace = 'wpsms';
+		self::$version   = 'v1';
+		self::$namespace = 'wpsms/' . self::$version;
+	}
+
+	/**
+	 * Get a registered route by the route name
+	 *
+	 * @param string $name
+	 */
+	public static function getRoute( $name ) {
+
+		foreach ( rest_get_server()->get_routes( self::$namespace ) as $route => $endpoints ) {
+			if ( strpos( $route, $name ) !== false ) {
+				return ltrim( $route, '/' );
+			}
+		}
+
+		return '';
 	}
 
 	/**
@@ -73,13 +91,13 @@ class RestApi {
 	public static function subscribe( $name, $mobile, $group ) {
 		global $sms;
 
-		if ( empty( $name ) OR empty( $mobile ) ) {
+		if ( empty( $name ) or empty( $mobile ) ) {
 			return new \WP_Error( 'subscribe', __( 'The name and mobile number must be valued!', 'wp-sms' ) );
 		}
 
 		$check_group = Newsletter::getGroup( $group );
 
-		if ( ! isset( $check_group ) AND empty( $check_group ) ) {
+		if ( ! isset( $check_group ) and empty( $check_group ) ) {
 			return new \WP_Error( 'subscribe', __( 'The group number is not valid!', 'wp-sms' ) );
 		}
 
@@ -106,7 +124,7 @@ class RestApi {
 
 		$gateway_name = Option::getOption( 'gateway_name' );
 
-		if ( Option::getOption( 'newsletter_form_verify' ) AND $gateway_name ) {
+		if ( Option::getOption( 'newsletter_form_verify' ) and $gateway_name ) {
 			// Check gateway setting
 			if ( ! $gateway_name ) {
 				// Return response
@@ -156,13 +174,13 @@ class RestApi {
 	 */
 	public static function unSubscribe( $name, $mobile, $group ) {
 
-		if ( empty( $name ) OR empty( $mobile ) ) {
+		if ( empty( $name ) or empty( $mobile ) ) {
 			return new \WP_Error( 'unsubscribe', __( 'The name and mobile number must be valued!', 'wp-sms' ) );
 		}
 
 		$check_group = Newsletter::getGroup( $group );
 
-		if ( ! isset( $check_group ) AND empty( $check_group ) ) {
+		if ( ! isset( $check_group ) and empty( $check_group ) ) {
 			return new \WP_Error( 'unsubscribe', __( 'The group number is not valid!', 'wp-sms' ) );
 		}
 
@@ -213,7 +231,7 @@ class RestApi {
 	public static function verifySubscriber( $name, $mobile, $activation, $group ) {
 		global $sms, $wpdb;
 
-		if ( empty( $name ) OR empty( $mobile ) OR empty( $activation ) ) {
+		if ( empty( $name ) or empty( $mobile ) or empty( $activation ) ) {
 			return new \WP_Error( 'unsubscribe', __( 'The required parameters must be valued!', 'wp-sms' ) );
 		}
 
@@ -283,21 +301,21 @@ class RestApi {
 		if ( $page ) {
 			$limit = $limit . $wpdb->prepare( ' OFFSET %d', $result_limit * $page - $result_limit );
 		}
-		if ( $group_id AND $where ) {
+		if ( $group_id and $where ) {
 			$where .= $wpdb->prepare( ' AND group_ID = %d', $group_id );
-		} elseif ( $group_id AND ! $where ) {
+		} elseif ( $group_id and ! $where ) {
 			$where = $wpdb->prepare( 'WHERE group_ID = %d', $group_id );
 		}
 
-		if ( $mobile AND $where ) {
+		if ( $mobile and $where ) {
 			$where .= $wpdb->prepare( ' AND mobile = %s', $mobile );
-		} elseif ( $mobile AND ! $where ) {
+		} elseif ( $mobile and ! $where ) {
 			$where = $wpdb->prepare( 'WHERE mobile = %s', $mobile );
 		}
 
-		if ( $search AND $where ) {
+		if ( $search and $where ) {
 			$where .= $wpdb->prepare( ' AND name LIKE %s', '%' . $wpdb->esc_like( $search ) . '%' );
-		} elseif ( $search AND ! $where ) {
+		} elseif ( $search and ! $where ) {
 			$where = $wpdb->prepare( 'WHERE name LIKE "%s"', '%' . $wpdb->esc_like( $search ) . '%' );
 		}
 
@@ -317,7 +335,7 @@ class RestApi {
 	 */
 	public static function sendSMS( $to, $msg, $isflash = false ) {
 		// Check if valued required parameters or not
-		if ( empty( $to ) OR empty( $msg ) ) {
+		if ( empty( $to ) or empty( $msg ) ) {
 			return new \WP_Error( 'send_sms', __( 'The required parameters must be valued!', 'wp-sms' ) );
 		}
 
